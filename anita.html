@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anita 🌸 — Tracker de embarazo</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --pink:       #D4537E;
+    --pink-light: #FBEAF0;
+    --pink-mid:   #ED93B1;
+    --teal:       #1D9E75;
+    --teal-light: #E1F5EE;
+    --teal-mid:   #5DCAA5;
+    --purple:     #534AB7;
+    --purple-light: #EEEDFE;
+    --purple-mid: #AFA9EC;
+    --cream:      #FDF8F4;
+    --warm-white: #FFFCFA;
+    --text:       #2A1F1A;
+    --text-mid:   #7A6058;
+    --text-soft:  #B09088;
+    --border:     rgba(212, 83, 126, 0.15);
+  }
+
+  html, body {
+    min-height: 100vh;
+    background: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+  }
+
+  body {
+    background-image:
+      radial-gradient(ellipse 60% 40% at 10% 0%, rgba(237,147,177,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 90% 100%, rgba(93,202,165,0.12) 0%, transparent 60%);
+  }
+
+  .page {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 4rem;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+  .header-eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--pink);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  .header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 40px;
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.1;
+    margin-bottom: 0.4rem;
+  }
+  .header h1 em {
+    font-style: italic;
+    color: var(--pink);
+  }
+  .header-sub {
+    font-size: 14px;
+    color: var(--text-mid);
+    font-weight: 300;
+  }
+
+  /* ── SEMANA DISPLAY ── */
+  .week-display {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1.5rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .week-display::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--pink-mid), var(--teal-mid));
+  }
+  .week-big {
+    font-family: 'DM Serif Display', serif;
+    font-size: 64px;
+    line-height: 1;
+    color: var(--pink);
+    font-weight: 400;
+  }
+  .week-label {
+    font-size: 13px;
+    color: var(--text-mid);
+    margin-top: 4px;
+    font-weight: 300;
+  }
+  .week-date {
+    font-size: 14px;
+    color: var(--text-soft);
+    margin-top: 8px;
+    font-style: italic;
+  }
+
+  /* ── STAT CARDS ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 1.5rem;
+  }
+  .stat {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 10px;
+    text-align: center;
+  }
+  .stat-val {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: var(--text);
+    font-weight: 400;
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--text-soft);
+    margin-top: 5px;
+    font-weight: 300;
+    line-height: 1.3;
+  }
+
+  /* ── CONTROLES ── */
+  .control-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .control-label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-soft);
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+  .slider-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  input[type=range] {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--pink-light);
+    outline: none;
+    cursor: pointer;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--pink);
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(212,83,126,0.35);
+    transition: transform 0.15s;
+  }
+  input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+  .slider-val {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--pink);
+    min-width: 28px;
+    text-align: right;
+  }
+  .day-btns {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    margin-top: 12px;
+  }
+  .day-btn {
+    padding: 8px 0;
+    border: 1px solid var(--border);
+    background: transparent;
+    border-radius: 10px;
+    font-size: 11px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    color: var(--text-mid);
+    transition: all 0.15s;
+    font-weight: 400;
+  }
+  .day-btn:hover { background: var(--pink-light); color: var(--pink); border-color: var(--pink-mid); }
+  .day-btn.active {
+    background: var(--pink);
+    color: white;
+    border-color: var(--pink);
+    font-weight: 500;
+  }
+  .day-hint { font-size: 10px; color: var(--text-soft); text-align: center; margin-top: 8px; }
+
+  /* ── BARRAS DE PROGRESO ── */
+  .phases { margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 12px; }
+  .phase-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1rem 1.25rem;
+  }
+  .phase-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+  }
+  .phase-name { font-size: 13px; font-weight: 500; }
+  .phase-pct { font-family: 'DM Serif Display', serif; font-size: 20px; }
+  .bar-track {
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #F0EAE7;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s cubic-bezier(.4,0,.2,1);
+  }
+  .phase-sub { font-size: 11px; color: var(--text-soft); margin-top: 6px; }
+
+  /* ── HITOS ── */
+  .milestones-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .milestones-title {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-soft);
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+  .milestone {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(212,83,126,0.08);
+  }
+  .milestone:last-child { border-bottom: none; }
+  .m-dot-wrap { padding-top: 3px; flex-shrink: 0; }
+  .m-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #E8DDD8;
+    transition: background 0.3s;
+  }
+  .m-dot.done  { background: var(--teal); }
+  .m-dot.now   { background: var(--pink); box-shadow: 0 0 0 3px rgba(212,83,126,0.2); }
+  .m-name { font-size: 13px; color: var(--text); line-height: 1.3; }
+  .m-date { font-size: 11px; color: var(--text-soft); margin-top: 2px; font-style: italic; }
+
+  /* ── PRÓXIMO VIERNES ── */
+  .next-fri-card {
+    background: var(--pink-light);
+    border: 1px solid rgba(212,83,126,0.2);
+    border-radius: 14px;
+    padding: 1rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  .nf-label { font-size: 11px; color: var(--pink); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 500; }
+  .nf-val { font-size: 14px; color: var(--text); margin-top: 3px; font-weight: 400; }
+  .nf-right { text-align: right; }
+
+  /* ── MENSAJE ── */
+  .msg-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.25rem;
+    text-align: center;
+  }
+  .msg-text {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: var(--text);
+    font-style: italic;
+    line-height: 1.4;
+    font-weight: 400;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 11px;
+    color: var(--text-soft);
+    font-weight: 300;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="header-eyebrow">embarazo</div>
+    <h1>Hola, <em>Anita</em> 🌸</h1>
+    <p class="header-sub" id="hdr-sub">—</p>
+  </div>
+
+  <div class="week-display">
+    <div class="week-big" id="week-big">—</div>
+    <div class="week-label">semana de embarazo</div>
+    <div class="week-date" id="week-date">—</div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat">
+      <div class="stat-val" id="s-days">—</div>
+      <div class="stat-label">días<br>transcurridos</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" id="s-left">—</div>
+      <div class="stat-label">días para<br>conocer a Anita</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" id="s-pct">—</div>
+      <div class="stat-label">del camino<br>recorrido</div>
+    </div>
+  </div>
+
+  <div class="control-card">
+    <div class="control-label">Semana</div>
+    <div class="slider-row">
+      <input type="range" min="1" max="40" step="1" value="8" id="week-slider" />
+      <div class="slider-val" id="slider-out">8</div>
+    </div>
+    <div class="control-label" style="margin-top:14px;">Día de la semana</div>
+    <div class="day-btns" id="day-btns">
+      <button class="day-btn" data-d="0">Vier</button>
+      <button class="day-btn" data-d="1">Sáb</button>
+      <button class="day-btn" data-d="2">Dom</button>
+      <button class="day-btn" data-d="3">Lun</button>
+      <button class="day-btn" data-d="4">Mar</button>
+      <button class="day-btn" data-d="5">Mié</button>
+      <button class="day-btn" data-d="6">Jue</button>
+    </div>
+    <div class="day-hint">Las semanas se cumplen los viernes</div>
+  </div>
+
+  <div class="next-fri-card">
+    <div>
+      <div class="nf-label">Próxima semana cumple</div>
+      <div class="nf-val" id="next-fri">—</div>
+    </div>
+    <div class="nf-right">
+      <div class="nf-label">Fecha probable de parto</div>
+      <div class="nf-val">Viernes 18 dic 2026 🌸</div>
+    </div>
+  </div>
+
+  <div class="phases">
+    <div class="phase-card">
+      <div class="phase-top">
+        <span class="phase-name" style="color:var(--pink)">🌱 Etapa 1 · sem. 1–13</span>
+        <span class="phase-pct" id="p1-pct" style="color:var(--pink)">—</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill" id="bar1" style="width:0%;background:var(--pink)"></div></div>
+      <div class="phase-sub">Primer trimestre — superando la barrera inicial</div>
+    </div>
+    <div class="phase-card">
+      <div class="phase-top">
+        <span class="phase-name" style="color:var(--teal)">🌿 Etapa 2 · sem. 14–37</span>
+        <span class="phase-pct" id="p2-pct" style="color:var(--teal)">—</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill" id="bar2" style="width:0%;background:var(--teal)"></div></div>
+      <div class="phase-sub">Creciendo fuerte — de camino a término</div>
+    </div>
+    <div class="phase-card">
+      <div class="phase-top">
+        <span class="phase-name" style="color:var(--purple)">✨ Etapa 3 · sem. 38–40</span>
+        <span class="phase-pct" id="p3-pct" style="color:var(--purple)">—</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill" id="bar3" style="width:0%;background:var(--purple)"></div></div>
+      <div class="phase-sub">Lista para llegar — ¡ya podemos recibirla!</div>
+    </div>
+  </div>
+
+  <div class="milestones-card">
+    <div class="milestones-title">Hitos del camino</div>
+    <div class="milestone"><div class="m-dot-wrap"><div class="m-dot" id="dot-1"></div></div><div><div class="m-name">Primer latido detectable</div><div class="m-date" id="m1">Semana 6 · viernes 1 may 2026</div></div></div>
+    <div class="milestone"><div class="m-dot-wrap"><div class="m-dot" id="dot-chichen"></div></div><div><div class="m-name">🎂 Cumpleaños de Chichen</div><div class="m-date">Semana 12+1d · sábado 6 jun 2026</div></div></div>
+    <div class="milestone"><div class="m-dot-wrap"><div class="m-dot" id="dot-2"></div></div><div><div class="m-name">Primer trimestre completo</div><div class="m-date" id="m2"></div></div></div>
+    <div class="milestone"><div class="m-dot-wrap"><div class="m-dot" id="dot-mama"></div></div><div><div class="m-name">🎂 Cumpleaños de mamá</div><div class="m-date">Semana 20+5d · miércoles 29 jul 2026</div></div></div>
+    <div class="milestone"><div class="m-dot-wrap"><div class="m-dot" id="dot-truso"></div></div><div><div class="m-name">🎂 Cumpleaños de Truso</div><div class="m-date">Semana 25+5d · miércoles 2 sep 2026</div></div></div>
+    <div class="milestone"><div class="m-dot-wrap"><div class="m-dot" id="dot-3"></div></div><div><div class="m-name">2do trimestre cumplido · 3er trimestre comienza</div><div class="m-date" id="m3"></div></div></div>
+    <div class="milestone"><div class="m-dot-wrap"><div class="m-dot" id="dot-papa"></div></div><div><div class="m-name">🎂 Cumpleaños de papá</div><div class="m-date">Semana 29+1d · sábado 3 oct 2026</div></div></div>
+    <div class="milestone"><div class="m-dot-wrap"><div class="m-dot" id="dot-4"></div></div><div><div class="m-name">Anita a término 🎉</div><div class="m-date" id="m4"></div></div></div>
+    <div class="milestone"><div class="m-dot-wrap"><div class="m-dot" id="dot-5"></div></div><div><div class="m-name">Fecha probable de parto 🌸</div><div class="m-date" id="m5">Semana 40 · viernes 18 dic 2026</div></div></div>
+  </div>
+
+  <div class="msg-card">
+    <div class="msg-text" id="msg">—</div>
+  </div>
+
+  <div class="footer">Viernes semana 1 = 20 mar 2026 · FPP = 18 dic 2026</div>
+
+</div>
+<script>
+// Ancla: viernes 20 mar 2026 = semana 1
+// Verificado: 20 mar 2026 es viernes (getDay() === 5)
+// Semana 40 = 20 mar + 39*7 días = 18 dic 2026
+
+const FRIDAY_W1 = new Date(2026, 2, 20);
+
+function fridayOfWeek(w) {
+  const d = new Date(FRIDAY_W1);
+  d.setDate(d.getDate() + (w - 1) * 7);
+  return d;
+}
+function addDays(d, n) { const r = new Date(d); r.setDate(r.getDate() + n); return r; }
+function fmtShort(d) { return d.toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' }); }
+function fmtFri(d) { return 'viernes ' + fmtShort(d); }
+
+const MILESTONE_WEEKS = [6, 13, 28, 37, 40];
+const MILESTONE_IDS   = ['m1','m2','m3','m4','m5'];
+
+// Fechas fijas de hitos
+MILESTONE_WEEKS.forEach((mw, i) => {
+  if (mw === 6 || mw === 40) return;
+  const el = document.getElementById(MILESTONE_IDS[i]);
+  if (el) el.textContent = 'Semana ' + mw + ' · ' + fmtFri(fridayOfWeek(mw));
+});
+
+const DAY_NAMES = ['Vier','Sáb','Dom','Lun','Mar','Mié','Jue'];
+
+const MSGS = [
+  [1,  6,  'Cada día cuenta. Anita está echando raíces 🌱'],
+  [7,  12, 'Los primeros meses son los más intensos. ¡Anita, lo estás haciendo increíble! 💪'],
+  [13, 13, '¡Primer trimestre completo! Etapa 1 superada 🎉'],
+  [14, 24, 'Etapa 2 en marcha. Anita está creciendo fuerte 🌿'],
+  [25, 36, 'Más de la mitad del camino. Ya casi podemos verla 💫'],
+  [37, 37, '¡Etapa 2 superada! Anita ya está a término ✨'],
+  [38, 39, 'Cuenta regresiva final. Cualquier día... 🎀'],
+  [40, 40, '¡Fecha probable de parto! Bienvenida, Anita 🌸'],
+];
+function getMessage(w) { for (const [a,b,m] of MSGS) { if (w>=a&&w<=b) return m; } return ''; }
+
+// Calcular semana+día desde la fecha del sistema
+const today = new Date();
+today.setHours(0,0,0,0);
+const daysSinceFriW1 = Math.round((today - FRIDAY_W1) / (1000*60*60*24));
+let curWeek = Math.min(40, Math.max(1, Math.floor(daysSinceFriW1 / 7) + 1));
+let curDay  = Math.max(0, daysSinceFriW1 % 7);
+// Sincronizar controles al valor calculado
+document.getElementById('week-slider').value = curWeek;
+document.querySelectorAll('.day-btn').forEach(b => {
+  b.classList.toggle('active', parseInt(b.dataset.d) === curDay);
+});
+
+function update() {
+  const fri     = fridayOfWeek(curWeek);
+  const curDate = addDays(fri, curDay);
+  const totalDays = (curWeek - 1) * 7 + curDay + 1;
+  const left    = Math.max(0, 280 - totalDays);
+  const pct     = Math.round((totalDays / 280) * 100);
+  const fracW   = curWeek + curDay / 7;
+
+  // Header
+  const dayLabel = DAY_NAMES[curDay];
+  document.getElementById('hdr-sub').textContent =
+    fmtShort(curDate) + (curDay > 0 ? ' · ' + dayLabel : ' · Viernes');
+  document.getElementById('week-big').textContent =
+    curDay > 0 ? curWeek + '+' + curDay : '' + curWeek;
+  document.getElementById('week-date').textContent =
+    'Hoy es ' + curDate.toLocaleDateString('es-MX', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+
+  // Stats
+  document.getElementById('s-days').textContent = totalDays;
+  document.getElementById('s-left').textContent = left;
+  document.getElementById('s-pct').textContent  = pct + '%';
+
+  // Slider
+  document.getElementById('slider-out').textContent = curWeek;
+  document.getElementById('week-slider').value = curWeek;
+
+  // Próximo viernes
+  const nextFri = fridayOfWeek(curWeek + 1);
+  document.getElementById('next-fri').textContent =
+    'Viernes ' + fmtShort(nextFri) + ' → semana ' + (curWeek + 1);
+
+  // Fases
+  // Etapa 1: sem 1–13 (13 semanas = primer trimestre)
+  const p1 = fracW <= 13 ? Math.round((fracW / 13) * 100) : 100;
+  document.getElementById('bar1').style.width = p1 + '%';
+  document.getElementById('bar1').style.background = curWeek <= 13 ? 'var(--pink)' : 'var(--pink-mid)';
+  document.getElementById('p1-pct').textContent = curWeek > 13 ? '✓' : p1 + '%';
+
+  // Etapa 2: sem 14–37 (24 semanas)
+  const p2 = fracW < 14 ? 0 : fracW > 37 ? 100 : Math.round(((fracW - 13) / 24) * 100);
+  document.getElementById('bar2').style.width = p2 + '%';
+  document.getElementById('bar2').style.background = (curWeek >= 14 && curWeek <= 37) ? 'var(--teal)' : 'var(--teal-mid)';
+  document.getElementById('p2-pct').textContent = curWeek < 14 ? '—' : curWeek > 37 ? '✓' : p2 + '%';
+
+  // Etapa 3: sem 38–40 (3 semanas)
+  const p3 = fracW < 38 ? 0 : Math.min(100, Math.round(((fracW - 37) / 3) * 100));
+  document.getElementById('bar3').style.width = p3 + '%';
+  document.getElementById('bar3').style.background = curWeek >= 38 ? 'var(--purple)' : 'var(--purple-mid)';
+  document.getElementById('p3-pct').textContent = curWeek < 38 ? '—' : p3 + '%';
+
+  // Hitos
+  const dotMap = [
+    { id: 'dot-1',      mw: 6,  bday: false },
+    { id: 'dot-2',      mw: 13, bday: false },
+    { id: 'dot-chichen',date: new Date(2026,5,6),  bday: true },
+    { id: 'dot-3',      mw: 28, bday: false },
+    { id: 'dot-mama',   date: new Date(2026,6,29), bday: true },
+    { id: 'dot-truso',  date: new Date(2026,8,2),  bday: true },
+    { id: 'dot-4',      mw: 37, bday: false },
+    { id: 'dot-papa',   date: new Date(2026,9,3),  bday: true },
+    { id: 'dot-5',      mw: 40, bday: false },
+  ];
+  dotMap.forEach(({ id, mw, date, bday }) => {
+    const dot = document.getElementById(id);
+    if (!dot) return;
+    const passed = bday
+      ? today > date
+      : fracW >= mw + 1;
+    const current = !bday && curWeek === mw;
+    if (passed)        { dot.className = 'm-dot done'; dot.style.background = bday ? '#ED93B1' : ''; }
+    else if (current)  { dot.className = 'm-dot now'; dot.style.background = ''; }
+    else               { dot.className = 'm-dot'; dot.style.background = bday ? 'rgba(212,83,126,0.25)' : ''; }
+  });
+
+  // Mensaje
+  document.getElementById('msg').textContent = getMessage(curWeek);
+
+  // Botones día
+  document.querySelectorAll('.day-btn').forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.d) === curDay);
+  });
+}
+
+document.getElementById('week-slider').addEventListener('input', e => {
+  curWeek = parseInt(e.target.value); update();
+});
+document.getElementById('day-btns').addEventListener('click', e => {
+  const btn = e.target.closest('.day-btn');
+  if (!btn) return;
+  curDay = parseInt(btn.dataset.d); update();
+});
+
+// Verificar ancla
+if (new Date(2026, 2, 20).getDay() !== 5) {
+  alert('Error de fecha ancla — avisar.');
+} else {
+  update();
+}
+</script>
+</body>
+</html>
